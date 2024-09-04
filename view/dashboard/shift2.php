@@ -330,17 +330,6 @@
                 // Update elements
                 targetPerSecondElement.textContent = targetPerSecond;
                 actualOutputElement.textContent = actualOutput;
-
-                // Update the table cell for the actual output
-                document.querySelectorAll('.actual-output').forEach(function (cell) {
-                    const targetTime = cell.getAttribute('data-time');
-                    if (new Date().toLocaleTimeString('en-GB', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }) === targetTime) {
-                        cell.textContent = actualOutput;
-                    }
-                });
             }
 
             setInterval(updateCounters, 1000);
@@ -401,6 +390,7 @@
                 $('#setTargetModal').modal('hide');
             };
         });
+        
     </script>
 
 
@@ -410,4 +400,17 @@
 
 
 
-</html>
+</html>t.getElementById('targetPerSecond').innerHTML = `<b>${targetPerSecond}</b>`;
+
+                // Close the modal
+                $('#setTargetModal').modal('hide');
+            };
+        });
+    </script>
+
+
+
+
+</body>
+
+
