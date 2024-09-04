@@ -87,12 +87,14 @@ if (isset($_GET['pesan'])) {
                             <label for="part_no" class="form-label">PART NO</label>
                         </div>
                         <div class="col-md-9">
-                            <select name="part_no" id="part_no" class="form-control form-control-lg select2" required>
-                                <option value="">-- Pilih Part No --</option> <!-- Placeholder option -->
+                        <input type="text" name="part_no" id="part_no" class="form-control form-control-lg"
+                        placeholder="PART NUMBER" required>
+                            <!-- <select name="part_no" id="part_no" class="form-control form-control-lg select2" required>
+                                <option value="">-- Pilih Part No --</option> 
                                 <option value="Part 1">Part 1</option>
                                 <option value="Part 2">Part 2</option>
                                 <option value="Part 3">Part 3</option>
-                            </select>
+                            </select> -->
                         </div>
                     </div>
                     <div class="row mb-3 align-items-center">
@@ -102,8 +104,8 @@ if (isset($_GET['pesan'])) {
                         <div class="col-md-9">
                             <select name="shift" id="shift" class="form-control form-control-lg" required>
                                 <option value="">-- Pilih Shift No --</option> <!-- Placeholder option -->
-                                <option value="shift1">Shift 1</option>
-                                <option value="shift2">Shift 2</option>
+                                <option value="1">Shift 1</option>
+                                <option value="2">Shift 2</option>
                             </select>
                         </div>
                     </div>
@@ -130,10 +132,10 @@ if (isset($_GET['pesan'])) {
     <script>
         $(document).ready(function () {
             // Apply Select2 to your dropdown
-            $('#part_no').select2({
-                placeholder: "-- Pilih Part No --",
-                allowClear: true
-            });
+            // $('#part_no').select2({
+            //     placeholder: "-- Pilih Part No --",
+            //     allowClear: true
+            // });
         });
     </script>
     <script>

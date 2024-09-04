@@ -136,19 +136,35 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row align-items-center">
-                        <div class="col-sm-2 mb-2">
-                            <input type="date" id="tanggal" class="form-control" placeholder="Tanggal"
-                                aria-label="Tanggal" />
-                        </div>
-                        <div class="col-sm-2 mb-2">
-                            <h3>Shift 2</h3>
-                        </div>
-                        <div class="col-sm-3 mb-2">
-                            <h3>Line Assy 4</h3>
-                        </div>
-                        <div class="col-sm-3 mb-2">
-                            <h3>Nama Lengkap</h3>
-                        </div>
+                                <?php
+                                session_start();
+                                ?>
+
+                            <div class="col-sm-3 mb-2">
+                            <?php
+                            // Tampilkan nomor registrasi
+                            echo "<h3>" . $_SESSION['nama'] . "</h3>";
+                            ?>
+                            </div>
+                            <div class="col-sm-3 mb-2">
+                                <?php
+                                // Tampilkan shift
+                                echo "<h3>Shift: " . $_SESSION['shift'] . "</h3>";
+                                ?>
+                            </div>
+                            <div class="col-sm-3 mb-2">
+                                <?php
+                                // Tampilkan mesin
+                                echo "<h3>Mesin: " . $_SESSION['mesin'] . "</h3>";
+                                ?>
+                            </div>
+                            <div class="col-sm-3 mb-2">
+                                <?php
+                                // Tampilkan part number
+                                echo "<h3>Part: " . $_SESSION['part_no'] . "</h3>";
+                                ?>
+                            </div>
+
                     </div>
                 </div>
             </div>
@@ -170,49 +186,49 @@
                                 <tbody>
                                     <!-- Tabel Jam 07:30 - 08:30 -->
                                     <tr>
-                                        <td>07:30 - 08:30</td>
+                                        <td>19:30 - 20:30</td>
                                         <td>0</td> <!-- Target per jam -->
                                         <td>0</td> <!-- Aktual output per jam -->
                                     </tr>
                                     <!-- Tabel Jam 08:30 - 09:30 -->
                                     <tr>
-                                        <td>08:30 - 09:30</td>
+                                        <td>20:30 - 21:30</td>
                                         <td>0</td> <!-- Target per jam -->
                                         <td>0</td> <!-- Aktual output per jam -->
                                     </tr>
                                     <!-- Tabel Jam 09:30 - 10:30 -->
                                     <tr>
-                                        <td>09:30 - 10:30</td>
+                                        <td>21:30 - 22:30</td>
                                         <td>0</td> <!-- Target per jam -->
                                         <td>0</td> <!-- Aktual output per jam -->
                                     </tr>
                                     <!-- Tabel Jam 10:30 - 11:30 -->
                                     <tr>
-                                        <td>10:30 - 12:00</td>
+                                        <td>22:30 - 23:30</td>
                                         <td>0</td> <!-- Target per jam -->
                                         <td>0</td> <!-- Aktual output per jam -->
                                     </tr>
                                     <!-- Tabel Jam 12:30 - 13:30 -->
                                     <tr>
-                                        <td>13:00 - 13:30</td>
+                                        <td>23:30 - 01:30</td>
                                         <td>0</td> <!-- Target per jam -->
                                         <td>0</td> <!-- Aktual output per jam -->
                                     </tr>
                                     <!-- Tabel Jam 13:30 - 14:30 -->
                                     <tr>
-                                        <td>13:30 - 14:30</td>
+                                        <td>01:30 - 02:30</td>
                                         <td>0</td> <!-- Target per jam -->
                                         <td>0</td> <!-- Aktual output per jam -->
                                     </tr>
                                     <!-- Tabel Jam 14:30 - 15:30 -->
                                     <tr>
-                                        <td>14:30 - 15:30</td>
+                                        <td>02:30 - 03:30</td>
                                         <td>0</td> <!-- Target per jam -->
                                         <td>0</td> <!-- Aktual output per jam -->
                                     </tr>
                                     <!-- Tabel Jam 15:30 - 16:30 -->
                                     <tr>
-                                        <td>15:30 - 16:30</td>
+                                        <td>03:30 - 04:30</td>
                                         <td>0</td> <!-- Target per jam -->
                                         <td>0</td> <!-- Aktual output per jam -->
                                     </tr>
@@ -314,42 +330,42 @@
 
             // Define sessions with empty actual values
             const sessions = [{
-                    time: '07:30 - 08:30',
+                    time: '19:30 - 20:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '08:30 - 09:30',
+                    time: '20:30 - 21:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '09:30 - 10:30',
+                    time: '22:30 - 23:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '10:30 - 12:00',
+                    time: '23:30 - 01:00',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '13:00 - 13:30',
+                    time: '01:00 - 01:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '13:30 - 14:30',
+                    time: '01:30 - 03:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '14:30 - 15:30',
+                    time: '02:30 - 03:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '15:30 - 16:30',
+                    time: '03:30 - 04:30',
                     target: 0,
                     actual: 0
                 }
