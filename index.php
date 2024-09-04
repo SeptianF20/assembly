@@ -33,6 +33,7 @@ if (isset($_GET['pesan'])) {
     <div class="">
         <p><?= $errorMsg; ?></p>
         <div class="login-logo">
+            <img src="assets/img/logo.png" alt="Assembly App Logo" />
             <p>Assembly App</p>
         </div>
         <!-- /.login-logo -->
@@ -45,7 +46,7 @@ if (isset($_GET['pesan'])) {
                         </div>
                         <div class="col-md-9">
                             <input type="date" name="date" id="date" class="form-control form-control-lg"
-                                placeholder="TANGGAL" required>
+                                placeholder="TANGGAL" required readonly>
                         </div>
                     </div>
                     <div class="row mb-3 align-items-center">
@@ -64,9 +65,11 @@ if (isset($_GET['pesan'])) {
                         <div class="col-md-9">
                             <select name="mesin" id="mesin" class="form-control form-control-lg" required>
                                 <option value="">-- Pilih Mesin --</option> <!-- Placeholder option -->
-                                <option value="Mesin 1">Mesin 1</option>
-                                <option value="Mesin 2">Mesin 2</option>
-                                <option value="Mesin 3">Mesin 3</option>
+                                <option value="LAS01">LAS01</option>
+                                <option value="LAS02">LAS02</option>
+                                <option value="LAS03">LAS03</option>
+                                <option value="LAS04">LAS04</option>
+                                <option value="LAS05">LAS05</option>
                             </select>
                         </div>
                     </div>
@@ -84,7 +87,7 @@ if (isset($_GET['pesan'])) {
                             <label for="part_no" class="form-label">PART NO</label>
                         </div>
                         <div class="col-md-9">
-                            <select name="part_no" id="part_no" class="form-control form-control-lg" required>
+                            <select name="part_no" id="part_no" class="form-control form-control-lg select2" required>
                                 <option value="">-- Pilih Part No --</option> <!-- Placeholder option -->
                                 <option value="Part 1">Part 1</option>
                                 <option value="Part 2">Part 2</option>
@@ -94,10 +97,10 @@ if (isset($_GET['pesan'])) {
                     </div>
                     <div class="row mb-3 align-items-center">
                         <div class="col-md-3 text-end">
-                            <label for="part_no" class="form-label">Shift</label>
+                            <label for="shift" class="form-label">Shift</label>
                         </div>
                         <div class="col-md-9">
-                            <select name="part_no" id="part_no" class="form-control form-control-lg" required>
+                            <select name="shift" id="shift" class="form-control form-control-lg" required>
                                 <option value="">-- Pilih Shift No --</option> <!-- Placeholder option -->
                                 <option value="shift1">Shift 1</option>
                                 <option value="shift2">Shift 2</option>
@@ -121,9 +124,27 @@ if (isset($_GET['pesan'])) {
     <!-- /.login-box -->
 
     <?php include 'view/templates/login/login-footer.php' ?>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Apply Select2 to your dropdown
+            $('#part_no').select2({
+                placeholder: "-- Pilih Part No --",
+                allowClear: true
+            });
+        });
+    </script>
     <script>
         function resetForm() {
             // Mengambil elemen form dan meresetnya
             document.querySelector('form').reset();
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Set the date input to today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        });
     </script>
