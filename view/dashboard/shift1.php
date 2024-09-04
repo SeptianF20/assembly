@@ -140,13 +140,13 @@
                             <input type="date" id="tanggal" class="form-control" placeholder="Tanggal"
                                 aria-label="Tanggal" />
                         </div>
-                        <div class="col-sm-3 mb-2">
-                            <h3>Shift 1</h3>
+                        <div class="col-sm-2 mb-2">
+                            <h3>Shift 2</h3>
                         </div>
                         <div class="col-sm-3 mb-2">
                             <h3>Line Assy 4</h3>
                         </div>
-                        <div class="col-sm-2 mb-2">
+                        <div class="col-sm-3 mb-2">
                             <h3>Nama Lengkap</h3>
                         </div>
                         <div class="col-sm-2 mb-2">
@@ -166,13 +166,68 @@
                             <table id="example2" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>JAM</th>
-                                        <th>TARGET</th>
-                                        <th>AKTUAL</th>
+                                        <th>Jam</th>
+                                        <th>Target</th>
+                                        <th>Aktual</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Data will be added here dynamically -->
+                                    <!-- Tabel Jam 07:30 - 08:30 -->
+                                    <tr>
+                                        <td>07:30 - 08:30</td>
+                                        <td>44</td> <!-- Target per jam -->
+                                        <td>45</td> <!-- Aktual output per jam -->
+                                    </tr>
+                                    <!-- Tabel Jam 08:30 - 09:30 -->
+                                    <tr>
+                                        <td>08:30 - 09:30</td>
+                                        <td>44</td> <!-- Target per jam -->
+                                        <td>43</td> <!-- Aktual output per jam -->
+                                    </tr>
+                                    <!-- Tabel Jam 09:30 - 10:30 -->
+                                    <tr>
+                                        <td>09:30 - 10:30</td>
+                                        <td>44</td> <!-- Target per jam -->
+                                        <td>46</td> <!-- Aktual output per jam -->
+                                    </tr>
+                                    <!-- Tabel Jam 10:30 - 11:30 -->
+                                    <tr>
+                                        <td>10:30 - 11:30</td>
+                                        <td>44</td> <!-- Target per jam -->
+                                        <td>47</td> <!-- Aktual output per jam -->
+                                    </tr>
+                                    <!-- Tabel Jam 11:30 - 12:30 -->
+                                    <tr>
+                                        <td>12:30 - 13:30</td>
+                                        <td>44</td>
+                                        <td class="actual-output" data-start="12:30" data-end="13:30">0</td>
+                                    </tr>
+
+                                    <!-- Tabel Jam 12:30 - 13:30 -->
+                                    <tr>
+                                        <td>12:30 - 13:30</td>
+                                        <td>44</td> <!-- Target per jam -->
+                                        <td>44</td> <!-- Aktual output per jam -->
+                                    </tr>
+                                    <!-- Tabel Jam 13:30 - 14:30 -->
+                                    <tr>
+                                        <td>13:30 - 14:30</td>
+                                        <td>44</td> <!-- Target per jam -->
+                                        <td>45</td> <!-- Aktual output per jam -->
+                                    </tr>
+                                    <!-- Tabel Jam 14:30 - 15:30 -->
+                                    <tr>
+                                        <td>14:30 - 15:30</td>
+                                        <td>44</td> <!-- Target per jam -->
+                                        <td>46</td> <!-- Aktual output per jam -->
+                                    </tr>
+                                    <!-- Tabel Jam 15:30 - 16:30 -->
+                                    <tr>
+                                        <td>15:30 - 16:30</td>
+                                        <td>44</td> <!-- Target per jam -->
+                                        <td>47</td> <!-- Aktual output per jam -->
+                                    </tr>
+                                </tbody>
                                 </tbody>
                             </table>
                         </div>
@@ -183,7 +238,9 @@
                 <div class="col-lg-3 mb-3">
                     <div class="card">
                         <div class="card-body">
-                            <p class="fs-6">TARGET SHIFT <a href="#">(SET)</a></p>
+                            <p class="fs-6">TARGET SHIFT
+                                <a href="#" data-toggle="modal" data-target="#setTargetModal">(SET)</a>
+                            </p>
                             <h1 id="targetShift"><b>0</b></h1>
                         </div>
                     </div>
@@ -224,7 +281,8 @@
     <!-- /.content -->
 
     <!-- Modal -->
-    <div class="modal fade" id="setTargetModal" tabindex="-1" role="dialog" aria-labelledby="setTargetLabel" aria-hidden="true">
+    <div class="modal fade" id="setTargetModal" tabindex="-1" role="dialog" aria-labelledby="setTargetLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -255,7 +313,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const scanStatus = {};
             let actualOutput = 0;
 
@@ -272,12 +330,23 @@
                 // Update elements
                 targetPerSecondElement.textContent = targetPerSecond;
                 actualOutputElement.textContent = actualOutput;
+
+                // Update the table cell for the actual output
+                document.querySelectorAll('.actual-output').forEach(function (cell) {
+                    const targetTime = cell.getAttribute('data-time');
+                    if (new Date().toLocaleTimeString('en-GB', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) === targetTime) {
+                        cell.textContent = actualOutput;
+                    }
+                });
             }
 
             setInterval(updateCounters, 1000);
 
             // Handle form input change
-            document.getElementById('scanInput').addEventListener('change', function() {
+            document.getElementById('scanInput').addEventListener('change', function () {
                 const input = document.getElementById('scanInput');
                 const code = input.value.trim();
                 const output = document.getElementById('output');
@@ -317,7 +386,7 @@
             });
 
             // Function to save changes and update the displayed values
-            window.saveChanges = function() {
+            window.saveChanges = function () {
                 // Get the input value from the modal
                 var targetShift = parseInt(document.getElementById('targetShiftInput').value);
 
@@ -333,7 +402,12 @@
             };
         });
     </script>
-    
+
+
+
+
 </body>
+
+
 
 </html>

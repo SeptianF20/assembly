@@ -198,10 +198,11 @@
                                     </tr>
                                     <!-- Tabel Jam 11:30 - 12:30 -->
                                     <tr>
-                                        <td>11:30 - 12:30</td>
-                                        <td>44</td> <!-- Target per jam -->
-                                        <td>45</td> <!-- Aktual output per jam -->
+                                        <td>12:30 - 13:30</td>
+                                        <td>44</td>
+                                        <td class="actual-output" data-start="12:30" data-end="13:30">0</td>
                                     </tr>
+
                                     <!-- Tabel Jam 12:30 - 13:30 -->
                                     <tr>
                                         <td>12:30 - 13:30</td>
@@ -280,7 +281,8 @@
     <!-- /.content -->
 
     <!-- Modal -->
-    <div class="modal fade" id="setTargetModal" tabindex="-1" role="dialog" aria-labelledby="setTargetLabel" aria-hidden="true">
+    <div class="modal fade" id="setTargetModal" tabindex="-1" role="dialog" aria-labelledby="setTargetLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -311,9 +313,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const scanStatus = {};
-            let actualOutput = 0; 
+            let actualOutput = 0;
 
             // Function to update the displayed counters
             function updateCounters() {
@@ -328,12 +330,23 @@
                 // Update elements
                 targetPerSecondElement.textContent = targetPerSecond;
                 actualOutputElement.textContent = actualOutput;
+
+                // Update the table cell for the actual output
+                document.querySelectorAll('.actual-output').forEach(function (cell) {
+                    const targetTime = cell.getAttribute('data-time');
+                    if (new Date().toLocaleTimeString('en-GB', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) === targetTime) {
+                        cell.textContent = actualOutput;
+                    }
+                });
             }
 
             setInterval(updateCounters, 1000);
 
             // Handle form input change
-            document.getElementById('scanInput').addEventListener('change', function() {
+            document.getElementById('scanInput').addEventListener('change', function () {
                 const input = document.getElementById('scanInput');
                 const code = input.value.trim();
                 const output = document.getElementById('output');
@@ -373,7 +386,7 @@
             });
 
             // Function to save changes and update the displayed values
-            window.saveChanges = function() {
+            window.saveChanges = function () {
                 // Get the input value from the modal
                 var targetShift = parseInt(document.getElementById('targetShiftInput').value);
 
