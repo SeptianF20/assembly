@@ -192,19 +192,13 @@
                                     </tr>
                                     <!-- Tabel Jam 10:30 - 11:30 -->
                                     <tr>
-                                        <td>10:30 - 11:30</td>
+                                        <td>10:30 - 12:00</td>
                                         <td>44</td> <!-- Target per jam -->
                                         <td>47</td> <!-- Aktual output per jam -->
                                     </tr>
-                                    <!-- Tabel Jam 11:30 - 12:30 -->
-                                    <tr>
-                                        <td>11:30 - 12:30</td>
-                                        <td>44</td> <!-- Target per jam -->
-                                        <td>45</td> <!-- Aktual output per jam -->
-                                    </tr>
                                     <!-- Tabel Jam 12:30 - 13:30 -->
                                     <tr>
-                                        <td>12:30 - 13:30</td>
+                                        <td>13:00 - 13:30</td>
                                         <td>44</td> <!-- Target per jam -->
                                         <td>44</td> <!-- Aktual output per jam -->
                                     </tr>
@@ -313,7 +307,50 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const scanStatus = {};
-            let actualOutput = 0; 
+            let actualOutput = 0;
+
+            // Define sessions with empty actual values
+            const sessions = [{
+                    time: '07:30 - 08:30',
+                    target: 0,
+                    actual: 0
+                },
+                {
+                    time: '08:30 - 09:30',
+                    target: 0,
+                    actual: 0
+                },
+                {
+                    time: '09:30 - 10:30',
+                    target: 0,
+                    actual: 0
+                },
+                {
+                    time: '10:30 - 12:00',
+                    target: 0,
+                    actual: 0
+                },
+                {
+                    time: '13:00 - 13:30',
+                    target: 0,
+                    actual: 0
+                },
+                {
+                    time: '13:30 - 14:30',
+                    target: 0,
+                    actual: 0
+                },
+                {
+                    time: '14:30 - 15:30',
+                    target: 0,
+                    actual: 0
+                },
+                {
+                    time: '15:30 - 16:30',
+                    target: 0,
+                    actual: 0
+                }
+            ];
 
             // Function to update the displayed counters
             function updateCounters() {
@@ -321,16 +358,58 @@
                 const targetPerSecondElement = document.querySelector('#targetPerSecond');
                 const actualOutputElement = document.querySelector('#actualOutput');
 
-                // Dummy data for demonstration
                 const targetShift = parseInt(targetShiftElement.textContent);
                 const targetPerSecond = Math.round(targetShift / 8);
 
-                // Update elements
                 targetPerSecondElement.textContent = targetPerSecond;
                 actualOutputElement.textContent = actualOutput;
             }
 
-            setInterval(updateCounters, 1000);
+            // Update the actual column based on current time
+            function updateActualOutput() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+
+                let currentTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+
+                // Determine the session based on the current time
+                sessions.forEach(session => {
+                    const [startTime, endTime] = session.time.split(' - ');
+                    const [startHours, startMinutes] = startTime.split(':');
+                    const [endHours, endMinutes] = endTime.split(':');
+
+                    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(startHours), parseInt(startMinutes));
+                    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(endHours), parseInt(endMinutes));
+
+                    if (now >= start && now <= end) {
+                        session.actual += 1;
+                    }
+                });
+
+                updateTable();
+            }
+
+            function updateTable() {
+                const sessionTable = document.querySelector('#example2 tbody');
+                sessionTable.innerHTML = ''; // Clear existing table content
+
+                sessions.forEach(session => {
+                    const row = `
+                <tr>
+                    <td>${session.time}</td>
+                    <td>${session.target}</td> <!-- Target per jam -->
+                    <td>${session.actual}</td> <!-- Aktual output per jam -->
+                </tr>
+            `;
+                    sessionTable.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            setInterval(() => {
+                // This interval will be used for updating counters
+                updateCounters();
+            }, 1000);
 
             // Handle form input change
             document.getElementById('scanInput').addEventListener('change', function() {
@@ -346,6 +425,7 @@
                         action = 'OUT';
                         scanStatus[code] = 'COMPLETED';
                         actualOutput += 1; // Increment actualOutput
+                        updateActualOutput(); // Update table with actual values
                     } else if (status === 'OUT') {
                         action = 'Already processed OUT';
                     } else if (status === undefined) {
@@ -364,35 +444,51 @@
 
                     entry.innerHTML = `<span>${code}</span> <span>${action}</span>`;
 
-                    // Prepend the new entry to make it appear at the top
                     output.prepend(entry);
-
-                    // Clear the input field for the next scan
                     input.value = '';
                 }
             });
 
             // Function to save changes and update the displayed values
             window.saveChanges = function() {
-                // Get the input value from the modal
-                var targetShift = parseInt(document.getElementById('targetShiftInput').value);
-
-                // Calculate the target per second (rounded)
-                var targetPerSecond = Math.round(targetShift / 8);
-
-                // Update the displayed values
-                document.getElementById('targetShift').innerHTML = `<b>${targetShift}</b>`;
-                document.getElementById('targetPerSecond').innerHTML = `<b>${targetPerSecond}</b>`;
+                distributeTargetShift();
 
                 // Close the modal
                 $('#setTargetModal').modal('hide');
             };
+
+            // Function to calculate and distribute targetShift
+            function distributeTargetShift() {
+                let targetShift = parseInt(document.getElementById('targetShiftInput').value) || 0;
+
+                const baseTargetPerSession = Math.floor(targetShift / sessions.length);
+                let remainder = targetShift % sessions.length;
+
+                sessions.forEach(session => {
+                    session.target = baseTargetPerSession;
+                });
+
+                while (remainder > 0) {
+                    const randomIndex = Math.floor(Math.random() * sessions.length);
+                    sessions[randomIndex].target += 1;
+                    remainder -= 1;
+                }
+
+                const targetShiftElement = document.querySelector('#targetShift');
+                const targetPerSecondElement = document.querySelector('#targetPerSecond');
+                targetShiftElement.innerHTML = `<b>${targetShift}</b>`;
+                targetPerSecondElement.innerHTML = `<b>${Math.round(targetShift / 8)}</b>`;
+
+                updateTable();
+            }
+
+            // Update targets when the input changes
+            document.getElementById('targetShiftInput').addEventListener('input', distributeTargetShift);
+
+            // Initial distribution with default or initial input value
+            distributeTargetShift();
         });
     </script>
-
-
-
-
 </body>
 
 
