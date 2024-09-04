@@ -184,19 +184,19 @@
                     <div class="card">
                         <div class="card-body">
                             <p class="fs-6">TARGET SHIFT <a href="#">(SET)</a></p>
-                            <h1 id="targetShift"><b>350</b></h1>
+                            <h1 id="targetShift"><b>0</b></h1>
                         </div>
                     </div>
                     <div class="card mt-3">
                         <div class="card-body">
                             <p class="fs-6">TARGET PER DETIK INI <a href="#">(SET)</a></p>
-                            <h1 id="targetPerSecond"><b>44</b></h1>
+                            <h1 id="targetPerSecond"><b>0</b></h1>
                         </div>
                     </div>
                     <div class="card mt-3">
                         <div class="card-body">
                             <p class="fs-6">AKTUAL OUTPUT <a href="#">(SET)</a></p>
-                            <h1 id="actualOutput"><b>45</b></h1>
+                            <h1 id="actualOutput"><b>0</b></h1>
                         </div>
                     </div>
                 </div>
@@ -223,75 +223,117 @@
     </section>
     <!-- /.content -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="setTargetModal" tabindex="-1" role="dialog" aria-labelledby="setTargetLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="setTargetLabel">Set Target Shift</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="setTargetForm">
+                        <div class="form-group">
+                            <label for="targetShiftInput" class="form-label">Target Shift</label>
+                            <input type="number" class="form-control" id="targetShiftInput" value="0">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Object to track the scan status of each code
-        const scanStatus = {};
+        document.addEventListener('DOMContentLoaded', function() {
+            const scanStatus = {};
+            let actualOutput = 0;
 
-        // Auto-update counter every second
-        function updateCounters() {
-            const targetShiftElement = document.querySelector('#targetShift');
-            const targetPerSecondElement = document.querySelector('#targetPerSecond');
-            const actualOutputElement = document.querySelector('#actualOutput');
+            // Function to update the displayed counters
+            function updateCounters() {
+                const targetShiftElement = document.querySelector('#targetShift');
+                const targetPerSecondElement = document.querySelector('#targetPerSecond');
+                const actualOutputElement = document.querySelector('#actualOutput');
 
-            // Dummy data for demonstration
-            const targetShift = 350;
-            const targetPerSecond = 44;
-            const actualOutput = 45;
+                // Dummy data for demonstration
+                const targetShift = parseInt(targetShiftElement.textContent);
+                const targetPerSecond = Math.round(targetShift / 8);
 
-            // Update elements
-            targetShiftElement.textContent = targetShift;
-            targetPerSecondElement.textContent = targetPerSecond;
-            actualOutputElement.textContent = actualOutput;
-        }
-
-        // Update counters every second
-        setInterval(updateCounters, 1000);
-
-        // Handle form input change
-        document.getElementById('scanInput').addEventListener('change', function () {
-            const input = document.getElementById('scanInput');
-            const code = input.value.trim();
-            const output = document.getElementById('output');
-
-            if (code !== '') {
-                let action = '';
-                let status = scanStatus[code];
-
-                if (status === 'IN') {
-                    action = 'OUT';
-                    scanStatus[code] = 'COMPLETED';
-                } else if (status === 'OUT') {
-                    action = 'Already processed OUT';
-                } else if (status === undefined) {
-                    action = 'IN';
-                    scanStatus[code] = 'IN';
-                } else if (status === 'COMPLETED') {
-                    action = 'Already completed';
-                }
-
-                const entry = document.createElement('div');
-                entry.className = 'log-entry';
-
-                if (action === 'Already processed OUT' || action === 'Already completed') {
-                    entry.classList.add('completed');
-                }
-
-                entry.innerHTML = `<span>${code}</span> <span>${action}</span>`;
-                
-                // Prepend the new entry to make it appear at the top
-                output.prepend(entry);
-
-                // Clear the input field for the next scan
-                input.value = '';
+                // Update elements
+                targetPerSecondElement.textContent = targetPerSecond;
+                actualOutputElement.textContent = actualOutput;
             }
-        });
-    });
-</script>
 
+            setInterval(updateCounters, 1000);
+
+            // Handle form input change
+            document.getElementById('scanInput').addEventListener('change', function() {
+                const input = document.getElementById('scanInput');
+                const code = input.value.trim();
+                const output = document.getElementById('output');
+
+                if (code !== '') {
+                    let action = '';
+                    let status = scanStatus[code];
+
+                    if (status === 'IN') {
+                        action = 'OUT';
+                        scanStatus[code] = 'COMPLETED';
+                        actualOutput += 1; // Increment actualOutput
+                    } else if (status === 'OUT') {
+                        action = 'Already processed OUT';
+                    } else if (status === undefined) {
+                        action = 'IN';
+                        scanStatus[code] = 'IN';
+                    } else if (status === 'COMPLETED') {
+                        action = 'Already completed';
+                    }
+
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+
+                    if (action === 'Already processed OUT' || action === 'Already completed') {
+                        entry.classList.add('completed');
+                    }
+
+                    entry.innerHTML = `<span>${code}</span> <span>${action}</span>`;
+
+                    // Prepend the new entry to make it appear at the top
+                    output.prepend(entry);
+
+                    // Clear the input field for the next scan
+                    input.value = '';
+                }
+            });
+
+            // Function to save changes and update the displayed values
+            window.saveChanges = function() {
+                // Get the input value from the modal
+                var targetShift = parseInt(document.getElementById('targetShiftInput').value);
+
+                // Calculate the target per second (rounded)
+                var targetPerSecond = Math.round(targetShift / 8);
+
+                // Update the displayed values
+                document.getElementById('targetShift').innerHTML = `<b>${targetShift}</b>`;
+                document.getElementById('targetPerSecond').innerHTML = `<b>${targetPerSecond}</b>`;
+
+                // Close the modal
+                $('#setTargetModal').modal('hide');
+            };
+        });
+    </script>
+    
 </body>
 
 </html>
