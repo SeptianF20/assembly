@@ -1,3 +1,7 @@
+<?php
+                                session_start();
+                                ?>
+<?php include '../templates/login/login-header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +9,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Counting and Monitoring Application</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -136,9 +139,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row align-items-center">
-                                <?php
-                                session_start();
-                                ?>
+                                
 
                             <div class="col-sm-3 mb-2">
                             <?php

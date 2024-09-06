@@ -30,7 +30,7 @@ if ($result->num_rows > 0) {
         $_SESSION['status'] = 'login';
         
         // Arahkan pengguna ke halaman berdasarkan shift
-        if ($shift == 'shift1') {
+        if ($shift == '1') {
             header('location:dashboard/shift1.php');
         } else {
             header('location:dashboard/shift2.php');

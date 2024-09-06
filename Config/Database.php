@@ -3,7 +3,7 @@
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db = "assembly";
+$db = "pegawai";
 
 $connection = new mysqli($host, $user, $pass, $db);
 if (mysqli_connect_errno()) {
