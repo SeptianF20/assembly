@@ -1,7 +1,5 @@
 <?php include 'view/templates/login/login-header.php'; ?>
 
-<?php include 'view/templates/login/login-header.php'; ?>
-
 <?php
 include 'Config/Database.php';
 session_start();
@@ -51,6 +49,7 @@ if ($result && $result->num_rows > 0) {
         <p><?= $errorMsg; ?></p>
         <div class="login-logo">
             <img src="assets/img/logo.png" alt="Assembly App Logo" />
+            <link rel="stylesheet" href="assets/css/select2.min.css">
             <p>Assembly App</p>
         </div>
         <!-- /.login-logo -->
