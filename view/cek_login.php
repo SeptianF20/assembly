@@ -7,6 +7,7 @@ include '../config/Database.php';
 $noreg = $_POST['noreg'];
 $shift = $_POST['shift'];
 $mesin = $_POST['mesin']; // Ambil input mesin
+$supervisor = $_POST['supervisor']; // Ambil input supervisor
 $part_no = $_POST['part_no']; // Ambil input part_no
 
 // Menggunakan prepared statement untuk keamanan
@@ -18,29 +19,24 @@ $result = $stmt->get_result();
 // Cek apakah ada pengguna dengan noreg yang cocok
 if ($result->num_rows > 0) {
     $data = $result->fetch_assoc();
-    // Periksa lokasi kerja pengguna
+    // Simpan informasi sesi untuk pengguna yang berhasil login
+    $_SESSION['noreg'] = $noreg;
+    $_SESSION['shift'] = $shift;
+    $_SESSION['mesin'] = $mesin;
+    $_SESSION['supervisor'] = $supervisor;
+    $_SESSION['part_no'] = $part_no;
+    $_SESSION['nama'] = $data['nama']; // Simpan nama lengkap ke sesi
+    $_SESSION['status'] = 'login';
+
+    // Arahkan pengguna berdasarkan lokasi kerja
     if ($data['work_location'] == 'Nganjuk') {
-        // Simpan informasi sesi untuk pengguna yang berhasil login
-        $_SESSION['noreg'] = $noreg;
-        $_SESSION['work_location'] = 'Nganjuk';
-        $_SESSION['shift'] = $shift; 
-        $_SESSION['mesin'] = $mesin; 
-        $_SESSION['part_no'] = $part_no; 
-        $_SESSION['nama'] = $data['nama']; // Simpan nama lengkap ke sesi
-        $_SESSION['status'] = 'login';
-        
-        // Arahkan pengguna ke halaman berdasarkan shift
-        if ($shift == '1') {
-            header('location:dashboard/shift1.php');
-        } else {
-            header('location:dashboard/shift2.php');
-        }
-        exit();
+        // Jika lokasi kerja di Nganjuk, arahkan ke halaman set_target.php
+        header('location:dashboard/set_target.php');
     } else {
-        // Pengguna tidak memiliki akses ke lokasi yang diminta
-        header('location:../index.php?pesan=akses_dilarang');
-        exit();
+        // Jika lokasi kerja bukan Nganjuk, arahkan sesuai lokasi kerja
+        header('location:dashboard//index.php?'); // Ubah sesuai kebutuhan
     }
+    exit();
 } else {
     // noreg tidak ditemukan
     header('location:../index.php?pesan=gagal');

@@ -1,6 +1,9 @@
 <?php include 'view/templates/login/login-header.php'; ?>
 
+<?php include 'view/templates/login/login-header.php'; ?>
+
 <?php
+include 'Config/Database.php';
 session_start();
 
 $errorMsg = '';
@@ -9,8 +12,8 @@ if (isset($_GET['pesan'])) {
         $errorMsg = '<div class="alert alert-danger alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <h5><i class="icon fas fa-ban"></i> Alert!</h5>
-       No Registrasi Tidak Sesuai!
-    </div>';
+        No Registrasi Tidak Sesuai!
+     </div>';
     } elseif ($_GET['pesan'] == 'logout') {
         $errorMsg = '
         <div class="alert alert-success alert-dismissible">
@@ -26,6 +29,20 @@ if (isset($_GET['pesan'])) {
                   Anda harus login dulu!
                 </div>';
     }
+}
+
+// Ambil data part_no dari database
+$query = "SELECT part_no FROM part";
+$result = $connection->query($query);
+
+// Cek jika ada data
+$options = '';
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $options .= "<option value='{$row['part_no']}'>{$row['part_no']}</option>";
+    }
+} else {
+    $options .= "<option value=''>Tidak Ada part</option>";
 }
 ?>
 
@@ -87,25 +104,9 @@ if (isset($_GET['pesan'])) {
                             <label for="part_no" class="form-label">PART NO</label>
                         </div>
                         <div class="col-md-9">
-                        <input type="text" name="part_no" id="part_no" class="form-control form-control-lg"
-                        placeholder="PART NUMBER" required>
-                            <!-- <select name="part_no" id="part_no" class="form-control form-control-lg select2" required>
-                                <option value="">-- Pilih Part No --</option> 
-                                <option value="Part 1">Part 1</option>
-                                <option value="Part 2">Part 2</option>
-                                <option value="Part 3">Part 3</option>
-                            </select> -->
-                        </div>
-                    </div>
-                    <div class="row mb-3 align-items-center">
-                        <div class="col-md-3 text-end">
-                            <label for="shift" class="form-label">Shift</label>
-                        </div>
-                        <div class="col-md-9">
-                            <select name="shift" id="shift" class="form-control form-control-lg" required>
-                                <option value="">-- Pilih Shift No --</option> <!-- Placeholder option -->
-                                <option value="1">Shift 1</option>
-                                <option value="2">Shift 2</option>
+                            <select name="part_no" id="part_no" class="form-control form-control-lg select2" required>
+                                <option value="">-- Pilih Part No --</option>
+                                <?php echo $options; ?>
                             </select>
                         </div>
                     </div>
@@ -127,17 +128,7 @@ if (isset($_GET['pesan'])) {
 
     <?php include 'view/templates/login/login-footer.php' ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            // Apply Select2 to your dropdown
-            // $('#part_no').select2({
-            //     placeholder: "-- Pilih Part No --",
-            //     allowClear: true
-            // });
-        });
-    </script>
+    <script src="assets/js/select2.min.js"></script>
     <script>
         function resetForm() {
             // Mengambil elemen form dan meresetnya
@@ -148,5 +139,13 @@ if (isset($_GET['pesan'])) {
             // Set the date input to today's date
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#part_no').select2({
+                placeholder: "-- Pilih Part No --",
+                allowClear: true
+            });
         });
     </script>
