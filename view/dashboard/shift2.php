@@ -1,7 +1,3 @@
-<?php
-                                session_start();
-                                ?>
-<?php include '../templates/login/login-header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Counting and Monitoring Application</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="../../assets/bootstrap-4.5.3-dist/css/bootstrap.min.css">
     <style>
         body {
@@ -140,7 +138,9 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row align-items-center">
-                                
+                                <?php
+                                session_start();
+                                ?>
 
                             <div class="col-sm-3 mb-2">
                             <?php
@@ -248,7 +248,7 @@
                             <p class="fs-6">TARGET SHIFT
                                 <a href="#" data-toggle="modal" data-target="#setTargetModal">(SET)</a>
                             </p>
-                            <h1 id="targetShift"><b>0</b></h1>
+                            <h1 id="targetShift"><b><?php echo isset($_SESSION['target']) ? $_SESSION['target'] : '0'; ?></b></h1>
                         </div>
                     </div>
                     <div class="card mt-3">
@@ -293,35 +293,10 @@
     </section>
     <!-- /.content -->
 
-    <!-- Modal -->
-    <div class="modal fade" id="setTargetModal" tabindex="-1" role="dialog" aria-labelledby="setTargetLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="setTargetLabel">Set Target Shift</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="setTargetForm">
-                        <div class="form-group">
-                            <label for="targetShiftInput" class="form-label">Target Shift</label>
-                            <input type="number" class="form-control" id="targetShiftInput" value="0">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="../../assets/bootstrap-4.5.3-dist/js/jquery-3.5.1.slim.min.js"></script>
     <script src="../../assets/bootstrap-4.5.3-dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const scanStatus = {};
@@ -329,7 +304,7 @@
 
             // Define sessions with empty actual values
             const sessions = [{
-                    time: '19:30 - 20:30',
+                time: '19:30 - 20:30',
                     target: 0,
                     actual: 0
                 },

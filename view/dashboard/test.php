@@ -140,32 +140,32 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row align-items-center">
+                                
 
-
-                        <div class="col-sm-3 mb-2">
+                            <div class="col-sm-3 mb-2">
                             <?php
                             // Tampilkan nomor registrasi
                             echo "<h3>" . $_SESSION['nama'] . "</h3>";
                             ?>
-                        </div>
-                        <div class="col-sm-3 mb-2">
-                            <?php
+                            </div>
+                            <div class="col-sm-3 mb-2">
+                                <?php
                                 // Tampilkan shift
                                 echo "<h3>Shift: " . $_SESSION['shift'] . "</h3>";
                                 ?>
-                        </div>
-                        <div class="col-sm-3 mb-2">
-                            <?php
+                            </div>
+                            <div class="col-sm-3 mb-2">
+                                <?php
                                 // Tampilkan mesin
                                 echo "<h3>Mesin: " . $_SESSION['mesin'] . "</h3>";
                                 ?>
-                        </div>
-                        <div class="col-sm-3 mb-2">
-                            <?php
+                            </div>
+                            <div class="col-sm-3 mb-2">
+                                <?php
                                 // Tampilkan part number
                                 echo "<h3>Part: " . $_SESSION['part_no'] . "</h3>";
                                 ?>
-                        </div>
+                            </div>
 
                     </div>
                 </div>
@@ -324,147 +324,53 @@
     <script src="../../assets/bootstrap-4.5.3-dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Show the modal when the document is loaded
-            $('#setTargetModal').modal('show');
+            const scanStatus = {};
+            let actualOutput = 0;
 
             // Define sessions with empty actual values
             const sessions = [{
-                    time: '07:30 - 08:30',
+                    time: '19:30 - 20:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '08:30 - 09:30',
+                    time: '20:30 - 21:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '09:30 - 10:30',
+                    time: '22:30 - 23:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '10:30 - 12:00',
+                    time: '23:30 - 01:00',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '13:00 - 13:30',
+                    time: '01:00 - 01:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '13:30 - 14:30',
+                    time: '01:30 - 03:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '14:30 - 15:30',
+                    time: '02:30 - 03:30',
                     target: 0,
                     actual: 0
                 },
                 {
-                    time: '15:30 - 16:30',
+                    time: '03:30 - 04:30',
                     target: 0,
                     actual: 0
                 }
             ];
 
-            let actualOutput = 0;
-            const scanStatus = {};
-
-            // Render sessions in the table
-            function renderSessions() {
-                const tableBody = document.getElementById('sessionTableBody');
-                tableBody.innerHTML = '';
-                sessions.forEach((session, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                <td>${session.time}</td>
-                <td><input type="number" value="${session.target}" data-index="${index}" class="target-input" /></td>
-                <td>${session.actual}</td>
-            `;
-                    tableBody.appendChild(row);
-                });
-                updateTargetValues();
-            }
-
-            // Update target values in the table
-            function updateTargetValues() {
-                const targetInputs = document.querySelectorAll('.target-input');
-                targetInputs.forEach(input => {
-                    input.addEventListener('input', (event) => {
-                        const index = event.target.getAttribute('data-index');
-                        sessions[index].target = parseInt(event.target.value, 10) || 0;
-                        updateTable();
-                    });
-                });
-            }
-
-            // Update the table with sessions data
-            function updateTable() {
-                let totalTarget = 0;
-                let targetPerSecond = 0;
-                sessions.forEach(session => {
-                    totalTarget += session.target;
-                    targetPerSecond += session.target / (60 * 60);
-                });
-                document.getElementById('targetShift').innerText = totalTarget;
-                document.getElementById('targetPerSecond').innerText = targetPerSecond.toFixed(2);
-            }
-
-            // Save target data to the server
-            function saveTarget() {
-                const target = document.getElementById('targetShiftInput').value;
-                const noreg = 'some_value'; // Replace with actual value
-                const shift = 'some_shift'; // Replace with actual value
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'save_target.php',
-                    data: {
-                        target: target,
-                        noreg: noreg,
-                        shift: shift,
-                        supervisor: document.getElementById('supervisorInput').value
-                    },
-                    success: function (response) {
-                        alert('Data target berhasil disimpan: ' + response);
-                        $('#setTargetModal').modal('hide');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error occurred: ' + error);
-                        alert('Gagal menyimpan data target.');
-                    }
-                });
-            }
-
-            // Event listener for the save button in the modal
-            document.getElementById('saveTargetButton').addEventListener('click', function () {
-                saveTarget();
-            });
-
-            // Distribute targets across sessions
-            function distributeTargetShift() {
-                let targetShift = parseInt(document.getElementById('targetShiftInput').value) || 0;
-
-                const baseTargetPerSession = Math.floor(targetShift / sessions.length);
-                let remainder = targetShift % sessions.length;
-
-                sessions.forEach(session => {
-                    session.target = baseTargetPerSession;
-                });
-
-                while (remainder > 0) {
-                    const randomIndex = Math.floor(Math.random() * sessions.length);
-                    sessions[randomIndex].target += 1;
-                    remainder -= 1;
-                }
-
-                updateTable();
-            }
-
-            // Update the counters or other elements
+            // Function to update the displayed counters
             function updateCounters() {
                 const targetShiftElement = document.querySelector('#targetShift');
                 const targetPerSecondElement = document.querySelector('#targetPerSecond');
@@ -477,14 +383,15 @@
                 actualOutputElement.textContent = actualOutput;
             }
 
-            // Update the actual output based on current time
+            // Update the actual column based on current time
             function updateActualOutput() {
                 const now = new Date();
                 const hours = now.getHours();
                 const minutes = now.getMinutes();
 
-                const currentTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+                let currentTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 
+                // Determine the session based on the current time
                 sessions.forEach(session => {
                     const [startTime, endTime] = session.time.split(' - ');
                     const [startHours, startMinutes] = startTime.split(':');
@@ -503,7 +410,28 @@
                 updateTable();
             }
 
-            // Handle form input change for scanning
+            function updateTable() {
+                const sessionTable = document.querySelector('#example2 tbody');
+                sessionTable.innerHTML = ''; // Clear existing table content
+
+                sessions.forEach(session => {
+                    const row = `
+                <tr>
+                    <td>${session.time}</td>
+                    <td>${session.target}</td> <!-- Target per jam -->
+                    <td>${session.actual}</td> <!-- Aktual output per jam -->
+                </tr>
+            `;
+                    sessionTable.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            setInterval(() => {
+                // This interval will be used for updating counters
+                updateCounters();
+            }, 1000);
+
+            // Handle form input change
             document.getElementById('scanInput').addEventListener('change', function () {
                 const input = document.getElementById('scanInput');
                 const code = input.value.trim();
@@ -541,13 +469,44 @@
                 }
             });
 
-            // Event listener for input changes
+            // Function to save changes and update the displayed values
+            window.saveChanges = function () {
+                distributeTargetShift();
+
+                // Close the modal
+                $('#setTargetModal').modal('hide');
+            };
+
+            // Function to calculate and distribute targetShift
+            function distributeTargetShift() {
+                let targetShift = parseInt(document.getElementById('targetShiftInput').value) || 0;
+
+                const baseTargetPerSession = Math.floor(targetShift / sessions.length);
+                let remainder = targetShift % sessions.length;
+
+                sessions.forEach(session => {
+                    session.target = baseTargetPerSession;
+                });
+
+                while (remainder > 0) {
+                    const randomIndex = Math.floor(Math.random() * sessions.length);
+                    sessions[randomIndex].target += 1;
+                    remainder -= 1;
+                }
+
+                const targetShiftElement = document.querySelector('#targetShift');
+                const targetPerSecondElement = document.querySelector('#targetPerSecond');
+                targetShiftElement.innerHTML = `<b>${targetShift}</b>`;
+                targetPerSecondElement.innerHTML = `<b>${Math.round(targetShift / 8)}</b>`;
+
+                updateTable();
+            }
+
+            // Update targets when the input changes
             document.getElementById('targetShiftInput').addEventListener('input', distributeTargetShift);
 
-            // Initialize and set intervals
-            renderSessions();
+            // Initial distribution with default or initial input value
             distributeTargetShift();
-            setInterval(updateCounters, 1000);
         });
     </script>
 </body>
